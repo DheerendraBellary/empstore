@@ -1,0 +1,19 @@
+Employee Storage Service
+
+Description:
+-------------
+This service provides APIs necessary for employee storage, retrieval, modification etc.
+APIS:
+1. Add
+2. Search
+3. List
+4. Update
+5. Delete
+6. Restore
+
+TODO:
+---------
+1. Proper error codes should be returned with the client understandadle error messages
+   based on which client can take necessary actions for retry etc.
+   
+2. Optimization in Data Fetching part by sending the proper filters to DynamoDB itself.

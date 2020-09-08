@@ -1,0 +1,137 @@
+{
+    "Items": [
+        {
+            "Status": {
+                "S": "Active"
+            },
+            "Department": {
+                "S": "Development"
+            },
+            "Address": {
+                "S": "HNo 1, pqr Apts, pqr Road"
+            },
+            "Skills": {
+                "SS": [
+                    "aws",
+                    "c++",
+                    "go",
+                    "python"
+                ]
+            },
+            "HKey": {
+                "S": "employee/"
+            },
+            "Id": {
+                "S": "Emp_2"
+            },
+            "RKey": {
+                "S": "Emp_2"
+            },
+            "Name": {
+                "S": "Abc"
+            }
+        },
+        {
+            "Status": {
+                "S": "Active"
+            },
+            "Department": {
+                "S": "Development"
+            },
+            "Address": {
+                "S": "HNo 1, pqr Apts, pqr Road"
+            },
+            "Skills": {
+                "SS": [
+                    "aws",
+                    "c++",
+                    "go",
+                    "python"
+                ]
+            },
+            "HKey": {
+                "S": "employee/"
+            },
+            "Id": {
+                "S": "Emp_3"
+            },
+            "RKey": {
+                "S": "Emp_3"
+            },
+            "Name": {
+                "S": "Abc"
+            }
+        },
+        {
+            "Status": {
+                "S": "Active"
+            },
+            "Department": {
+                "S": "Testing"
+            },
+            "Address": {
+                "S": "HNo 2, tuv Apts, tuv Road"
+            },
+            "Skills": {
+                "SS": [
+                    "Selenium",
+                    "python"
+                ]
+            },
+            "HKey": {
+                "S": "employee/"
+            },
+            "Id": {
+                "S": "Emp_4"
+            },
+            "RKey": {
+                "S": "Emp_4"
+            },
+            "Name": {
+                "S": "Def"
+            }
+        },
+        {
+            "Status": {
+                "S": "Active"
+            },
+            "Department": {
+                "S": "Performance"
+            },
+            "Address": {
+                "S": "HNo 3, xyz Apts, xyz Road"
+            },
+            "Skills": {
+                "SS": [
+                    "perftesting"
+                ]
+            },
+            "HKey": {
+                "S": "employee/"
+            },
+            "Id": {
+                "S": "Emp_5"
+            },
+            "RKey": {
+                "S": "Emp_5"
+            },
+            "Name": {
+                "S": "Lmn"
+            }
+        },
+        {
+            "HKey": {
+                "S": "count/"
+            },
+            "Counter": {
+                "N": "5"
+            },
+            "RKey": {
+                "S": "emp"
+            }
+        }
+    ],
+    "Count": 5,
+    "ScannedCount": 5,
+    "ConsumedCapacity": null
+}
