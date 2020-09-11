@@ -3,6 +3,7 @@ package empservice
 import (
 	"empstore/db"
 	"empstore/empstoreapi"
+	"empstore/lease"
 	"fmt"
 	"os"
 	"strconv"
@@ -60,6 +61,10 @@ func AddEmployee(addReq *empstoreapi.AddRequest) (empID string, err error) {
 		empRecord["Skills"] = db.StrSetToAttr(addReq.Skills)
 	}
 	empRecord["Status"] = db.StrToAttr("Active")
+
+	//Add the lease value with 0, lease will be used in distributed synchronization.
+	//This can be optimized by not setting it now and handling it lease load.
+	empRecord["Lease"] = db.Num64ToAttr(int64(0))
 
 	//Store employee into DB
 	err = db.Put(tableName, empRecord)
@@ -193,9 +198,16 @@ func Update(updateReq *empstoreapi.UpdateRequest) (err error) {
 		db.RKeyName: db.StrToAttr(updateReq.ID),
 	}
 
-	//TODO: Check if this emp exist then proceed. This can be take cabe by lease also
-
-	//TODO: Load Lease here.
+	//Try to Load Lease here for the emp.
+	//Proceed only if we are able to do it.
+	ls, err := lease.Load(tableName, keys)
+	if err != nil {
+		return err
+	}
+	abort := make(chan int)
+	go ls.Renew(abort)
+	defer ls.Release()
+	defer close(abort)
 
 	updateInfo := make(map[string]*dynamodb.AttributeValue)
 	if updateReq.Department != "" {
@@ -207,7 +219,11 @@ func Update(updateReq *empstoreapi.UpdateRequest) (err error) {
 	if len(updateReq.Skills) != 0 {
 		updateInfo["Skills"] = db.StrSetToAttr(updateReq.Skills)
 	}
-	err = db.Update(tableName, keys, updateInfo)
+
+	cond := map[string]*dynamodb.AttributeValue{
+		"Lease": db.Num64ToAttr(ls.GetTimeStamp()),
+	}
+	err = db.UpdateExclusive(tableName, keys, updateInfo, cond)
 	return err
 }
 
@@ -217,7 +233,16 @@ func Delete(delReq *empstoreapi.DeleteRequest) (err error) {
 		db.HKeyName: db.StrToAttr(hkeyValEmployee),
 		db.RKeyName: db.StrToAttr(delReq.ID),
 	}
-	//TODO: Load Lease here and releaes it at the end
+	//Try to Load Lease here for the emp.
+	//Proceed only if we are able to do it.
+	ls, err := lease.Load(tableName, keys)
+	if err != nil {
+		return err
+	}
+	abort := make(chan int)
+	go ls.Renew(abort)
+	defer ls.Release()
+	defer close(abort)
 
 	//Delete Employee if PermanentlyDelete is set
 	//Else Deavtivate.
@@ -238,7 +263,17 @@ func Restore(restoreReq *empstoreapi.RestoreRequest) (err error) {
 		db.HKeyName: db.StrToAttr(hkeyValEmployee),
 		db.RKeyName: db.StrToAttr(restoreReq.ID),
 	}
-	//TODO: Load Lease here and releaes it at the end
+	//Try to Load Lease here for the emp.
+	//Proceed only if we are able to do it.
+	ls, err := lease.Load(tableName, keys)
+	if err != nil {
+		return err
+	}
+	abort := make(chan int)
+	go ls.Renew(abort)
+	defer ls.Release()
+	defer close(abort)
+
 	updateInfo := map[string]*dynamodb.AttributeValue{
 		"Status": db.StrToAttr(statusActive),
 	}
